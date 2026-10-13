@@ -23,3 +23,29 @@ export interface GeocodedLocation {
   region?: string;
   timezone?: string;
 }
+
+export const forecastResponseSchema = z.object({
+  timezone: z.string(),
+  daily: z.object({
+    time: z.array(z.string()),
+    weather_code: z.array(z.number().nullable()),
+    temperature_2m_max: z.array(z.number().nullable()),
+    temperature_2m_min: z.array(z.number().nullable()),
+    precipitation_probability_max: z.array(z.number().nullable()),
+    precipitation_sum: z.array(z.number().nullable()),
+  }),
+});
+
+export interface DailyForecast {
+  date: string;
+  weatherCode: number | null; 
+  tempMax: number | null; 
+  tempMin: number | null; 
+  precipitationProbability: number | null; 
+  precipitationSum: number | null;
+}
+
+export interface Forecast {
+  timezone: string;
+  days: DailyForecast[];
+}
