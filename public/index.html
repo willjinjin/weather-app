@@ -1,34 +1,80 @@
 <!doctype html>
-<html lang="en">
-
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Weather Forecast</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skycast: 7-day weather forecast</title>
+  <meta name="description" content="Search a place or coordinates and see the next 7 days of weather.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preload" href="/fonts/pixelify-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+  <script>
+    // Set the theme before first paint so there is no flash of the wrong theme.
+    (function () {
+      var theme = "";
+      try { theme = localStorage.getItem("theme") || ""; } catch (e) {}
+      if (theme !== "light" && theme !== "dark") {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
 </head>
-
 <body>
-    <main>
-        <h1>7-day weather forecast</h1>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Skycast home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        skycast
+      </a>
+      <button class="theme-toggle" id="theme-toggle" type="button">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.3 15.2A8.5 8.5 0 0 1 8.8 3.7 8.5 8.5 0 1 0 20.3 15.2Z" />
+        </svg>
+        <svg class="icon-sun-toggle" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" />
+        </svg>
+        <span id="theme-label">Dark</span>
+      </button>
+    </header>
 
-        <form id="search-form" role="search">
-            <label for="query">Location</label>
-            <div class="row">
-                <input id="query" name="q" type="text" autocomplete="off" placeholder="Auckland or -36.85, 174.76"
-                    aria-describedby="hint" required>
-                <button type="submit" id="search-button">Search</button>
-            </div>
-            <p id="hint" class="hint">
-                Try a city, an address, or coordinates like
-                <code>-36.85, 174.76</code> or <code>36.85S 174.76E</code>.
-            </p>
-        </form>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span aria-hidden="true"></span>Your week, at a glance</p>
+        <h1>What's the weather?</h1>
+        <p class="hero-description">
+          A simple 7-day outlook, wherever you're headed. No clutter, just the forecast.
+        </p>
+      </div>
 
-        <div id="status" role="status" aria-live="polite"></div>
-        <section id="results" aria-label="Forecast results"></section>
-    </main>
-    <script src="/js/app.js"></script>
+      <form class="search-form" id="search-form" role="search">
+        <label for="query">Find a forecast</label>
+        <div class="search-row">
+          <span class="search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="m20 20-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+            </svg>
+          </span>
+          <input id="query" name="q" type="text" placeholder="Where to?"
+                 autocomplete="off" aria-describedby="hint" required>
+          <button type="submit" id="search-button">Search <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="search-hint" id="hint">
+          Try a city, an address, or coordinates, e.g. 36.85S 174.76E
+        </p>
+      </form>
+    </section>
+
+    <!-- Screen readers hear loading and result announcements here. -->
+    <div id="announcer" class="sr-only" role="status" aria-live="polite"></div>
+
+    <div id="results"></div>
+
+    <footer>
+      <p>Forecasts can change, so check back before you head out.</p>
+      <span aria-hidden="true">☼</span>
+    </footer>
+  </main>
+  <script src="/js/app.js"></script>
 </body>
-
 </html>
